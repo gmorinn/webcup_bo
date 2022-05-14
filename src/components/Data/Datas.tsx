@@ -59,7 +59,7 @@ const Datas = () => {
   ////////////////////
 
     const listItem = () => {
-      Fetch(`/v1/bo/users/datas/${page*rowsPerPage}/${rowsPerPage}?field=${orderBy}&direction=${order}`)
+      Fetch(`/v1/bo/datas/${page*rowsPerPage}/${rowsPerPage}?field=${orderBy}&direction=${order}`)
       .then(res => {
         if (res?.success && res.success && res.data && res.data.length > 0) {
           setData(res.data)
