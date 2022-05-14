@@ -13,10 +13,11 @@ type DashboardContentProps = {
   key?: string,
   edit: string,
   setSelected: React.Dispatch<React.SetStateAction<any[]>>,
-  children: ReactNode
+  children: ReactNode,
+  noEdit?: boolean
 }
 
-const DashboardContent = ({ selected, isItemSelected, row, labelId, edit, setSelected, children }:DashboardContentProps) => {
+const DashboardContent = ({ selected, isItemSelected, row, labelId, edit, setSelected, children, noEdit }:DashboardContentProps) => {
     const navigate = useNavigate()
     const handleClick = (event:SyntheticEvent, id:string) => {
       const selectedIndex = selected.indexOf(id);
@@ -58,7 +59,7 @@ const DashboardContent = ({ selected, isItemSelected, row, labelId, edit, setSel
         />
         </TableCell>
         {children}
-        <TableCell align="center">
+        {noEdit !== true && <TableCell align="center">
             <IconButton
             aria-label="edit page"
             size="small"
@@ -66,7 +67,7 @@ const DashboardContent = ({ selected, isItemSelected, row, labelId, edit, setSel
             >
             <ModeEditIcon fontSize="small"/>
           </IconButton>
-          </TableCell>
+          </TableCell>}
       </TableRow>
     )
   }

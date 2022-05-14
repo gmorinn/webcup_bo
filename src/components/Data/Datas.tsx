@@ -1,55 +1,68 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, TableCell } from '@mui/material';
 import { useApi } from '../../hooks/useApi';
 import DashboardTable from '../dashboard/DashboardTable';
 import useUpdateEffect from '../../hooks/useUpdateEffect'
 import DashboardContent from '../dashboard/DashboardContent';
-import { Column } from '../../utils/types';
+import { Column, Role, UUID } from '../../utils/types';
+import { useNavigate } from 'react-router-dom';
 
 const headCells:Column[] = [
   {
-    id: 'email',
+    id: 'title',
     numeric: false,
     disablePadding: true,
-    label: "Email",
+    label: "Titre",
   },
   {
-    id: 'message',
+    id: 'description',
     numeric: false,
     disablePadding: true,
-    label: 'Message',
+    label: 'Description',
+  },
+  {
+    id: 'user_id',
+    numeric: true,
+    disablePadding: false,
+    label: "Id de l'utilisateur",
+  },
+  {
+    id: 'img',
+    numeric: true,
+    disablePadding: false,
+    label: "Lien de l'image",
   },
 ];
 
-export type DisplayContact = {
+export type DisplayData = {
   id: string,
-  email: string,
-  message: string,
+  title: string,
+  description: string,
+  image?: string
+  user_id: UUID
 }
 
-const Contacts = () => {
-  const [data, setData] = useState<DisplayContact[] | null>(null)
+export type UserField = "title" | "description" | "user_id"
+
+const Datas = () => {
+  const [data, setData] = useState<DisplayData[] | null>(null)
   const [total, setTotal] = useState(0);
   const { Fetch } = useApi()
+  const navigate = useNavigate()
   const [selected, setSelected] = useState<string[]>([] as string[]);
 
   //// PAGINATION ////
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
+  const [orderBy, setOrderBy] = useState<UserField>('title');
   const [rowsPerPage, setRowsPerPage] = useState(10);
   ////////////////////
 
-  const deleteItems = () => {
-      Fetch("/v1/bo/contacts/remove", "PATCH", {tab: selected}, true)
-        .then(res => res?.success && setSelected([]))
-        .then(() => listItem())
-    }
-
     const listItem = () => {
-      Fetch(`/v1/bo/contacts/messages/${page*rowsPerPage}/${rowsPerPage}?field=email&direction=${order}`)
+      Fetch(`/v1/bo/users/datas/${page*rowsPerPage}/${rowsPerPage}?field=${orderBy}&direction=${order}`)
       .then(res => {
-        if (res?.success && res.success && res?.contacts?.length > 0) {
-          setData(res.contacts)
+        if (res?.success && res.success && res.data && res.data.length > 0) {
+          setData(res.data)
           setTotal(res.count)
         }
       })
@@ -57,7 +70,7 @@ const Contacts = () => {
 
     useUpdateEffect(() => {
       listItem()
-    }, [rowsPerPage, page, order])
+    }, [rowsPerPage, page, order, orderBy])
 
     useEffect(() => {
       listItem()
@@ -68,13 +81,13 @@ const Contacts = () => {
   return (
     <Box sx={{ width: '100%' }}>
       <DashboardTable
-        name="Contacts"
-        add="/contacts/add"
-        deleteItems={deleteItems}
+        name="Datas"
+        add="/datas/add"
+        deleteItems={() => {}}
         order={order}
         total={total}
-        orderBy={"email"}
-        setOrderBy={() => {}}
+        orderBy={orderBy}
+        setOrderBy={setOrderBy}
         rowsPerPage={rowsPerPage}
         setRowsPerPage={setRowsPerPage}
         page={page}
@@ -85,7 +98,7 @@ const Contacts = () => {
         data={data}
         headCells={headCells}
       >
-        {data && data?.length > 0 && data?.map((row:DisplayContact, index:number) => {
+        {data && data?.length > 0 && data?.map((row:DisplayData, index:number) => {
             return (
               <DashboardContent
                 noEdit
@@ -95,7 +108,7 @@ const Contacts = () => {
                 key={row.id}
                 isItemSelected={selected.indexOf(row?.id) !== -1}
                 labelId={`checkbox-${index}`}
-                edit={`/contacts/edit/${row.id}`}
+                edit={`/datas/edit/${row.id}`}
               >
                       <TableCell
                         component="th"
@@ -103,10 +116,12 @@ const Contacts = () => {
                         scope="row"
                         padding="none"
                       >
-                        {row.email}
+                        {row.title}
                       </TableCell>
-                      <TableCell align="right">{row.message}</TableCell>
-            </DashboardContent>
+                      <TableCell align="right">{row.description}</TableCell>
+                      <TableCell align="right" onClick={() => navigate("/users/edit/"+row.user_id)}>Voir l'utilisateur</TableCell>
+                      <TableCell align="right" onClick={() => {row.image && row.image !== "" && window.open(process.env.REACT_APP_API_URL + row.image)}}>Voir l'image</TableCell>
+                      </DashboardContent>
             );
         })}
       </DashboardTable>
@@ -114,4 +129,4 @@ const Contacts = () => {
   );
 }
 
-export default Contacts
+export default Datas

@@ -36,6 +36,7 @@ const Navbar =({ toggleDrawerHandler, open }:PropsNavBar) => {
       <List>
         <Icon text="Users" icon={<GroupIcon />} redirect={() => navigate("/users")} />
         <Icon text="Contacts" icon={<GroupIcon />} redirect={() => navigate("/contacts")} />
+        <Icon text="Data" icon={<GroupIcon />} redirect={() => navigate("/datas")} />
       </List>
     </div>
     </Drawer>

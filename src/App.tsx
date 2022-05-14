@@ -9,6 +9,7 @@ import Footer from "./components/Footer";
 import Header from "./components/Header";
 import CssBaseline from '@mui/material/CssBaseline';
 import RoutesUsers from "./components/Users/RoutesUsers";
+import RoutesData from "./components/Data/RoutesData";
 import RoutesContact from "./components/Contacts/RoutesContacts";
 import { darkModeAtom } from "./store/mode";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
@@ -48,6 +49,7 @@ const App: FC = () => {
           {/* PRIVATE ROUTE */}
           <Route path="/" element={<PrivateRoute component={Users}/>} />
           <Route path="users/*" element={<PrivateRoute component={RoutesUsers}/>} />
+          <Route path="datas/*" element={<PrivateRoute component={RoutesData}/>} />
           <Route path="contacts/*" element={<PrivateRoute component={RoutesContact}/>} />
         </Routes>
       </Container>
