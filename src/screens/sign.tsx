@@ -17,6 +17,13 @@ const Sign: FC = () => {
                     <WhatshotIcon sx={{ fontSize: 40 }} className="mt-5 w-100 d-flex justify-content-center"/>
                     <CardContent>
                         <Login />
+                        <div className="text-white text-center mt-4">
+                            <small>Inscrivez vous ou connectez vous avec</small>
+                            <br />
+                            <small>webcup@gmail.com</small>
+                            <br />
+                            <small>webcup974</small>
+                        </div>
                     </CardContent>
                 </Card>
             </Grid>
